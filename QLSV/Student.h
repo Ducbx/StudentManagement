@@ -22,5 +22,6 @@ public:
 	void SetPhone(CString strPhone);
 	int GetAge();
 	void SetAge(int iAge);
+	
 };
 

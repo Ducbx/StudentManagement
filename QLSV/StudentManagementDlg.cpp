@@ -7,6 +7,8 @@
 #include "StudentManagementDlg.h"
 #include "afxdialogex.h"
 #include "StudentInfoDlg.h"
+#include "Student.h"
+#include<vector>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -64,6 +66,8 @@ void CStudentManagementDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BTN_DEL, m_btnDel);
 	DDX_Control(pDX, IDC_BTN_EXIT, m_btnExit);
 	DDX_Control(pDX, IDC_BTN_CONNECT, m_btnConnect);
+	DDX_Control(pDX, IDC_BTN_SORT, m_btnSort);
+	DDX_Control(pDX, IDC_BTN_SEARCH, m_btnSearch);
 }
 
 BEGIN_MESSAGE_MAP(CStudentManagementDlg, CDialogEx)
@@ -73,6 +77,7 @@ BEGIN_MESSAGE_MAP(CStudentManagementDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_ADD, &CStudentManagementDlg::OnBnClickedBtnAdd)
 	ON_BN_CLICKED(IDC_BTN_EXIT, &CStudentManagementDlg::OnBnClickedBtnExit)
 	ON_BN_CLICKED(IDC_BTN_CONNECT, &CStudentManagementDlg::OnBnClickedBtnConnect)
+	ON_BN_CLICKED(IDC_BTN_EDIT, &CStudentManagementDlg::OnBnClickedBtnEdit)
 END_MESSAGE_MAP()
 
 
@@ -108,6 +113,7 @@ BOOL CStudentManagementDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
+	DisableButton();
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -184,6 +190,7 @@ void CStudentManagementDlg::OnBnClickedBtnConnect()
 		{
 			m_btnConnect.SetWindowTextW(L"Disconnect");
 			m_bIsConnected = TRUE;
+			EnableButton();
 		}
 	}
 	else
@@ -191,6 +198,38 @@ void CStudentManagementDlg::OnBnClickedBtnConnect()
 		m_DBConnection.CloseDB();
 		m_btnConnect.SetWindowTextW(L"Connect");
 		m_bIsConnected = FALSE;
+		DisableButton();
 	}
+	//Sau khi connect ban luon message to update list control
+}
+
+
+void CStudentManagementDlg::OnBnClickedBtnEdit()
+{
+	//CString strSQL = _T("insert into dbo.QLSV(StudentID, Name, Sex, Age, PhoneNumber) values('8', 'Phu VK', 'Male', '27', '09888888')");
+	//m_DBConnection.SQLSetDataExecute(strSQL);
+
+	CString strSQL = _T("SELECT * FROM dbo.QLSV");
+	m_DBConnection.SQLGetDataExecute(strSQL);
 	
+	std::vector<CStudent> listStudent;
+	listStudent = m_DBConnection.GetStudentInfo();
+}
+
+void CStudentManagementDlg::EnableButton()
+{
+	m_btnAdd.EnableWindow(TRUE);
+	m_btnDel.EnableWindow(TRUE);
+	m_btnSearch.EnableWindow(TRUE);
+	m_btnEdit.EnableWindow(TRUE);
+	m_btnSort.EnableWindow(TRUE);
+}
+
+void CStudentManagementDlg::DisableButton()
+{
+	m_btnAdd.EnableWindow(FALSE);
+	m_btnDel.EnableWindow(FALSE);
+	m_btnSearch.EnableWindow(FALSE);
+	m_btnEdit.EnableWindow(FALSE);
+	m_btnSort.EnableWindow(FALSE);
 }

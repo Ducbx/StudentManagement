@@ -36,13 +36,19 @@ protected:
 	CButton m_btnEdit;
 	CButton m_btnDel;
 	CButton m_btnExit;
+	CButton m_btnSort;
+	CButton m_btnSearch;
+	CButton m_btnConnect;
 public:
 	afx_msg void OnBnClickedBtnAdd();
 	afx_msg void OnBnClickedBtnExit();
-	CButton m_btnConnect;
-public:
-	afx_msg void OnBnClickedBtnConnect();
 private:
 	CDatabaseConnection m_DBConnection;
 	BOOL m_bIsConnected;
+public:
+	afx_msg void OnBnClickedBtnEdit();
+	afx_msg void OnBnClickedBtnConnect();
+	void EnableButton();
+	void DisableButton();
+	
 };
