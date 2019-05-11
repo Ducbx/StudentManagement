@@ -1,11 +1,12 @@
 #include "stdafx.h"
 #include "Student.h"
 #include <vector>
+#include "IDatabase.h"
 
 #pragma once
 #import "msado15.dll" no_namespace rename("EOF", "EndOfFile")
 
-class CDatabaseConnection
+class CDatabaseConnection : public IDatabase
 {
 public:
 	CDatabaseConnection();

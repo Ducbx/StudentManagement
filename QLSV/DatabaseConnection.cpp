@@ -51,7 +51,7 @@ BOOL CDatabaseConnection::OpenDB()
 			CoUninitialize();
 			return FALSE;
 		}
-		AfxMessageBox(L"Opening Database OK");
+		//AfxMessageBox(L"Opening Database OK");
 		m_bIsConnected = TRUE;
 		return TRUE;
 	}
@@ -143,6 +143,9 @@ void CDatabaseConnection::SQLGetDataExecute(CString strSQLquery)
 
 std::vector<CStudent> CDatabaseConnection::GetStudentInfo()
 {
+	CString strSQL = _T("SELECT * FROM dbo.QLSV");
+	SQLGetDataExecute(strSQL);
+
 	std::vector<CStudent> vtListStudent;
 	try
 	{

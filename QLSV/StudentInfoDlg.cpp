@@ -5,6 +5,7 @@
 #include "StudentManagement.h"
 #include "StudentInfoDlg.h"
 #include "afxdialogex.h"
+#include "Student.h"
 
 
 // CStudentInfoDlg dialog
@@ -35,6 +36,7 @@ void CStudentInfoDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CStudentInfoDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_CANCEL, &CStudentInfoDlg::OnBnClickedButtonCancel)
+	ON_BN_CLICKED(IDC_BUTTON_OK, &CStudentInfoDlg::OnBnClickedButtonOk)
 END_MESSAGE_MAP()
 
 
@@ -44,4 +46,12 @@ END_MESSAGE_MAP()
 void CStudentInfoDlg::OnBnClickedButtonCancel()
 {
 	this->OnCancel();
+}
+
+
+void CStudentInfoDlg::OnBnClickedButtonOk()
+{
+	// get info of student
+	// set to m_student
+	//SEND msg of m_student to parent
 }

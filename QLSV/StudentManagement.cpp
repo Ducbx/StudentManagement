@@ -5,6 +5,8 @@
 #include "stdafx.h"
 #include "StudentManagement.h"
 #include "StudentManagementDlg.h"
+#include "DatabaseConnection.h"
+#include "StudentService.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -70,7 +72,10 @@ BOOL CStudentManagementApp::InitInstance()
 	// such as the name of your company or organization
 	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
 
-	CStudentManagementDlg dlg;
+	IDatabase* dbConnection = new CDatabaseConnection();
+	IStudentService *pStudentService = new CStudentService(dbConnection);
+	
+	CStudentManagementDlg dlg(pStudentService);
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == IDOK)

@@ -25,6 +25,10 @@ protected:
 	CEdit m_edtPhone;
 	CButton m_btnOk;
 	CButton m_btnCancel;
+//	CStudent m_student;
 public:
 	afx_msg void OnBnClickedButtonCancel();
+	afx_msg void OnBnClickedButtonOk();
+private:
+	//CStudent m_student;
 };

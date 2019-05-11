@@ -5,14 +5,14 @@
 #pragma once
 #include "afxcmn.h"
 #include "afxwin.h"
-#include "DatabaseConnection.h"
+#include "IStudentService.h"
 
 // CStudentManagementDlg dialog
 class CStudentManagementDlg : public CDialogEx
 {
 // Construction
 public:
-	CStudentManagementDlg(CWnd* pParent = NULL);	// standard constructor
+	CStudentManagementDlg(IStudentService* pStudentService, CWnd* pParent = NULL);	// standard constructor
 
 // Dialog Data
 	enum { IDD = IDD_QLSV_DIALOG };
@@ -31,7 +31,7 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
-	CListCtrl m_lctrStudentTable;
+	CListCtrl m_listCtrlStudent;
 	CButton m_btnAdd;
 	CButton m_btnEdit;
 	CButton m_btnDel;
@@ -43,12 +43,13 @@ public:
 	afx_msg void OnBnClickedBtnAdd();
 	afx_msg void OnBnClickedBtnExit();
 private:
-	CDatabaseConnection m_DBConnection;
+	IStudentService* m_pStudentService;
 	BOOL m_bIsConnected;
 public:
 	afx_msg void OnBnClickedBtnEdit();
 	afx_msg void OnBnClickedBtnConnect();
-	void EnableButton();
+	afx_msg LRESULT OnReceiveStudentInforToAdd(WPARAM wParam, LPARAM lParam);
 	void DisableButton();
-	
+	void EnableButton();
+	void LoadDBToListControl();
 };
