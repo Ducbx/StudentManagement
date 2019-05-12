@@ -1,5 +1,8 @@
 #pragma once
 #include "afxwin.h"
+#include <cstdint>
+#include "windows.h"
+#include "Student.h"
 
 
 // CStudentInfoDlg dialog
@@ -11,7 +14,7 @@ class CStudentInfoDlg : public CDialogEx
 public:
 	CStudentInfoDlg(CWnd* pParent = NULL);   // standard constructor
 	virtual ~CStudentInfoDlg();
-
+	virtual BOOL OnInitDialog();
 // Dialog Data
 	enum { IDD = IDD_STUDENT_INFO_DIALOG };
 
@@ -25,10 +28,10 @@ protected:
 	CEdit m_edtPhone;
 	CButton m_btnOk;
 	CButton m_btnCancel;
-//	CStudent m_student;
+	CEdit m_edtID;
 public:
 	afx_msg void OnBnClickedButtonCancel();
 	afx_msg void OnBnClickedButtonOk();
 private:
-	//CStudent m_student;
+	CStudent *m_student;
 };

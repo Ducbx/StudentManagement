@@ -1,1 +1,3 @@
+#pragma once
+
 #define UWM_SEND_STUDENT_INFO_TO_PARENT WM_USER+1

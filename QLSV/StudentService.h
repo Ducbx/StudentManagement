@@ -16,6 +16,7 @@ public:
 	virtual BOOL OpenDB();
 	virtual BOOL CloseDB();
 	virtual std::vector<CStudent> GetStudentInfo();
+	virtual BOOL AddStudent(CStudent student);
 private:
 	IDatabase *m_dbConnection;
 };

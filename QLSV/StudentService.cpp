@@ -31,3 +31,9 @@ std::vector<CStudent> CStudentService::GetStudentInfo()
 	studentList = m_dbConnection->GetStudentInfo();
 	return studentList;
 }
+
+BOOL CStudentService::AddStudent(CStudent student)
+{
+	m_dbConnection->AddStudent(student);
+	return TRUE;
+}

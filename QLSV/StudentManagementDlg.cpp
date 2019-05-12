@@ -9,6 +9,7 @@
 #include "StudentInfoDlg.h"
 #include "Student.h"
 #include<vector>
+#include "MessageDefine.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -79,6 +80,7 @@ BEGIN_MESSAGE_MAP(CStudentManagementDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_EXIT, &CStudentManagementDlg::OnBnClickedBtnExit)
 	ON_BN_CLICKED(IDC_BTN_CONNECT, &CStudentManagementDlg::OnBnClickedBtnConnect)
 	ON_BN_CLICKED(IDC_BTN_EDIT, &CStudentManagementDlg::OnBnClickedBtnEdit)
+	ON_MESSAGE(UWM_SEND_STUDENT_INFO_TO_PARENT, OnReceiveStudentInforToAdd)
 END_MESSAGE_MAP()
 
 
@@ -128,11 +130,11 @@ BOOL CStudentManagementDlg::OnInitDialog()
 		0,              // Rank/order of item 
 		L"ID",          // Caption for this header 
 		LVCFMT_CENTER,    // Relative position of items under header 
-		0.5*nColInterval);           // Width of items under header
-	m_listCtrlStudent.InsertColumn(1, L"Name", LVCFMT_CENTER, 1.75*nColInterval);
-	m_listCtrlStudent.InsertColumn(2, L"Age", LVCFMT_CENTER, 0.5*nColInterval);
-	m_listCtrlStudent.InsertColumn(3, L"Sex", LVCFMT_CENTER, 0.5*nColInterval);
-	m_listCtrlStudent.InsertColumn(4, L"Phone Number", LVCFMT_CENTER, 1.75*nColInterval);
+		(int)(0.5*nColInterval));           // Width of items under header
+	m_listCtrlStudent.InsertColumn(1, L"Name", LVCFMT_CENTER, (int)(1.75*nColInterval));
+	m_listCtrlStudent.InsertColumn(2, L"Age", LVCFMT_CENTER, (int)(0.5*nColInterval));
+	m_listCtrlStudent.InsertColumn(3, L"Sex", LVCFMT_CENTER, (int)(0.5*nColInterval));
+	m_listCtrlStudent.InsertColumn(4, L"Phone Number", LVCFMT_CENTER, (int)(1.75*nColInterval));
 
 	/*int nItem = m_listCtrlStudent.InsertItem(0, L"1");
 	m_listCtrlStudent.SetItemText(nItem, 1, L"Mark");
@@ -205,7 +207,7 @@ HCURSOR CStudentManagementDlg::OnQueryDragIcon()
 
 void CStudentManagementDlg::OnBnClickedBtnAdd()
 {
-	CStudentInfoDlg *dlgStudent = new CStudentInfoDlg();
+	CStudentInfoDlg *dlgStudent = new CStudentInfoDlg(this);
 	dlgStudent->DoModal();
 }
 
@@ -269,6 +271,7 @@ void CStudentManagementDlg::DisableButton()
 	m_btnSort.EnableWindow(FALSE);
 }
 
+//khong goi truc tiep ma goi qua service
 void CStudentManagementDlg::LoadDBToListControl()
 {
 	//UI khong dc goi thang DB
@@ -276,7 +279,7 @@ void CStudentManagementDlg::LoadDBToListControl()
 	listStudent = m_pStudentService->GetStudentInfo();
 
 	m_listCtrlStudent.DeleteAllItems();
-	for (int i = 0; i < listStudent.size(); i++)
+	for (size_t i = 0; i < listStudent.size(); i++)
 	{
 		CString strID, strAge;
 		strID.Format(_T("%d"), listStudent[i].GetStudentID());
@@ -298,6 +301,11 @@ LRESULT CStudentManagementDlg::OnReceiveStudentInforToAdd(WPARAM wParam, LPARAM 
 	int rate = 100 * temp / m_iTotalFileNumber;*/
 	//get info of student need add
 	//m_pStudentService->AddStudent(student);
-
+	CStudent *student = (CStudent*)wParam;
+	//day xuong database
+	m_pStudentService->AddStudent(*student);
+	
+	m_listCtrlStudent.DeleteAllItems();
+	LoadDBToListControl();
 	return 0L;
 }

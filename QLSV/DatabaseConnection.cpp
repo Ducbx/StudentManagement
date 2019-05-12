@@ -173,3 +173,34 @@ std::vector<CStudent> CDatabaseConnection::GetStudentInfo()
 	}
 	return vtListStudent;
 }
+
+BOOL CDatabaseConnection::AddStudent(CStudent student)
+{
+	CString strID, strAge;
+	strID.Format(_T("%d"), student.GetStudentID());
+	strAge.Format(_T("%d"), student.GetAge());
+
+	CString strSql = L"INSERT INTO dbo.QLSV (StudentID, Name, Sex, Age, PhoneNumber) VALUES ('";
+	strSql += strID;
+	strSql += L"','";
+	strSql += student.GetName();
+	strSql += L"','";
+	strSql += student.GetSex();
+	strSql += L"','";
+	strSql += strAge;
+	strSql += L"','";
+	strSql += student.GetPhone();
+	strSql += L"');";
+
+	try
+	{
+		SQLSetDataExecute(strSql);
+		return TRUE;
+	}
+	catch (_com_error & ce)
+	{
+		CString strTemp = ce.Description();
+		AfxMessageBox(strTemp);
+		return FALSE;
+	}
+}

@@ -1,9 +1,11 @@
+#pragma once
+
 #include "stdafx.h"
 #include "Student.h"
 #include <vector>
 #include "IDatabase.h"
 
-#pragma once
+
 #import "msado15.dll" no_namespace rename("EOF", "EndOfFile")
 
 class CDatabaseConnection : public IDatabase
@@ -18,11 +20,13 @@ private:
 	BOOL m_bIsConnected;
 	BOOL m_bIsRecordOpened;
 public:
-	BOOL OpenDB();
-	BOOL CloseDB();
 	BOOL SQLSetDataExecute(CString strSQLquery);
 	void SQLGetDataExecute(CString strSQLquery);
-	std::vector<CStudent> GetStudentInfo();
 	_RecordsetPtr GetRecordset();
+
+	virtual std::vector<CStudent> GetStudentInfo();
+	virtual BOOL OpenDB();
+	virtual BOOL CloseDB();
+	virtual BOOL AddStudent(CStudent student);
 };
 
