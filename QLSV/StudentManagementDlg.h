@@ -42,13 +42,16 @@ protected:
 public:
 	afx_msg void OnBnClickedBtnAdd();
 	afx_msg void OnBnClickedBtnExit();
+	afx_msg void OnClickListCtrl(NMHDR *pNMHDR, LRESULT *pResult);
 private:
 	IStudentService* m_pStudentService;
 	BOOL m_bIsConnected;
+	int m_iSelectedRow;
 public:
 	afx_msg void OnBnClickedBtnEdit();
 	afx_msg void OnBnClickedBtnConnect();
 	afx_msg LRESULT OnReceiveStudentInforToAdd(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnReceiveStudentInforToEdit(WPARAM wParam, LPARAM lParam);
 	void DisableButton();
 	void EnableButton();
 	void LoadDBToListControl();

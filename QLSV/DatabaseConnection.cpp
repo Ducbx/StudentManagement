@@ -176,13 +176,10 @@ std::vector<CStudent> CDatabaseConnection::GetStudentInfo()
 
 BOOL CDatabaseConnection::AddStudent(CStudent student)
 {
-	CString strID, strAge;
-	strID.Format(_T("%d"), student.GetStudentID());
+	CString strAge;
 	strAge.Format(_T("%d"), student.GetAge());
 
-	CString strSql = L"INSERT INTO dbo.QLSV (StudentID, Name, Sex, Age, PhoneNumber) VALUES ('";
-	strSql += strID;
-	strSql += L"','";
+	CString strSql = L"INSERT INTO dbo.QLSV (Name, Sex, Age, PhoneNumber) VALUES ('";
 	strSql += student.GetName();
 	strSql += L"','";
 	strSql += student.GetSex();

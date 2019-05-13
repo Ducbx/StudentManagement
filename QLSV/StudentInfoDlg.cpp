@@ -13,10 +13,11 @@
 
 IMPLEMENT_DYNAMIC(CStudentInfoDlg, CDialogEx)
 
-CStudentInfoDlg::CStudentInfoDlg(CWnd* pParent /*=NULL*/)
+CStudentInfoDlg::CStudentInfoDlg(CWnd* pParent, CStudent* student)
 	: CDialogEx(CStudentInfoDlg::IDD, pParent)
 {
 	m_student = new CStudent();
+	m_inputStudent = student;
 }
 
 CStudentInfoDlg::~CStudentInfoDlg()
@@ -26,18 +27,34 @@ CStudentInfoDlg::~CStudentInfoDlg()
 		delete m_student;
 		m_student = NULL;
 	}
+	if (m_inputStudent)
+	{
+		m_inputStudent = NULL;
+	}
 }
 
 BOOL CStudentInfoDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-
-
 	m_ccbSex.AddString(L"Male");
 	m_ccbSex.AddString(L"Female");
 	m_ccbSex.SetCurSel(1);
+	m_edtID.EnableWindow(FALSE);
 	
+	if (m_inputStudent)
+	{
+		CString strID, strAge;
+		strAge.Format(_T("%d"), m_inputStudent->GetAge());
+		strID.Format(_T("%d"), m_inputStudent->GetStudentID());
+
+		m_edtID.SetWindowText(strID);
+		m_edtName.SetWindowText(m_inputStudent->GetName());
+		m_edtAge.SetWindowText(strAge);
+		m_edtPhone.SetWindowText(m_inputStudent->GetPhone());
+
+		m_ccbSex.SetCurSel(m_ccbSex.FindStringExact(0, m_inputStudent->GetSex()));
+	}
 
 	UpdateData(FALSE);
 
@@ -75,8 +92,6 @@ void CStudentInfoDlg::OnBnClickedButtonCancel()
 
 void CStudentInfoDlg::OnBnClickedButtonOk()
 {
-	// get info of student
-	//Get ID, Name, age, phone
 	CString strTemp;
 	m_edtID.GetWindowTextW(strTemp);
 	m_student->SetStudentID(_wtoi(strTemp));
@@ -95,8 +110,14 @@ void CStudentInfoDlg::OnBnClickedButtonOk()
 	}
 	m_student->SetSex(strSex);
 
-	//SEND msg of m_student to parent
-	::SendMessage(GetParent()->GetSafeHwnd(), UWM_SEND_STUDENT_INFO_TO_PARENT, (WPARAM)m_student, 0);
+	if (m_inputStudent)
+	{
+		::SendMessage(GetParent()->GetSafeHwnd(), UWM_SEND_STUDENT_INFO_TO_EDIT, (WPARAM)m_student, 0);
+	}
+	else
+	{
+		::SendMessage(GetParent()->GetSafeHwnd(), UWM_SEND_STUDENT_INFO_TO_ADD, (WPARAM)m_student, 0);
+	}
 	
 	this->OnOK();
 }

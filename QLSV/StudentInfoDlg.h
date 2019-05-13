@@ -12,7 +12,7 @@ class CStudentInfoDlg : public CDialogEx
 	DECLARE_DYNAMIC(CStudentInfoDlg)
 
 public:
-	CStudentInfoDlg(CWnd* pParent = NULL);   // standard constructor
+	CStudentInfoDlg(CWnd* pParent = NULL, CStudent* student = NULL);   // standard constructor
 	virtual ~CStudentInfoDlg();
 	virtual BOOL OnInitDialog();
 // Dialog Data
@@ -34,4 +34,5 @@ public:
 	afx_msg void OnBnClickedButtonOk();
 private:
 	CStudent *m_student;
+	CStudent *m_inputStudent;
 };

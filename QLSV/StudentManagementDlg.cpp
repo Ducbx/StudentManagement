@@ -57,6 +57,7 @@ CStudentManagementDlg::CStudentManagementDlg(IStudentService* pStudentService, C
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_bIsConnected = FALSE;
 	m_pStudentService = pStudentService;
+	m_iSelectedRow = -1;
 }
 
 void CStudentManagementDlg::DoDataExchange(CDataExchange* pDX)
@@ -80,7 +81,9 @@ BEGIN_MESSAGE_MAP(CStudentManagementDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_EXIT, &CStudentManagementDlg::OnBnClickedBtnExit)
 	ON_BN_CLICKED(IDC_BTN_CONNECT, &CStudentManagementDlg::OnBnClickedBtnConnect)
 	ON_BN_CLICKED(IDC_BTN_EDIT, &CStudentManagementDlg::OnBnClickedBtnEdit)
-	ON_MESSAGE(UWM_SEND_STUDENT_INFO_TO_PARENT, OnReceiveStudentInforToAdd)
+	ON_MESSAGE(UWM_SEND_STUDENT_INFO_TO_ADD, OnReceiveStudentInforToAdd)
+	ON_MESSAGE(UWM_SEND_STUDENT_INFO_TO_EDIT, OnReceiveStudentInforToEdit)
+	ON_NOTIFY(NM_CLICK, IDC_LIST_ALL_STUDENT, &CStudentManagementDlg::OnClickListCtrl)
 END_MESSAGE_MAP()
 
 
@@ -119,8 +122,8 @@ BOOL CStudentManagementDlg::OnInitDialog()
 	DisableButton();
 
 	//Init list control
-	m_listCtrlStudent.SetExtendedStyle(LVS_EX_FULLROWSELECT);
-	m_listCtrlStudent.SetExtendedStyle(LVS_EX_GRIDLINES);
+	m_listCtrlStudent.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_SHOWSELALWAYS );
+	m_listCtrlStudent.SetExtendedStyle(m_listCtrlStudent.GetExtendedStyle()| LVS_EX_FULLROWSELECT);
 
 	CRect rect;
 	m_listCtrlStudent.GetClientRect(&rect);
@@ -132,22 +135,9 @@ BOOL CStudentManagementDlg::OnInitDialog()
 		LVCFMT_CENTER,    // Relative position of items under header 
 		(int)(0.5*nColInterval));           // Width of items under header
 	m_listCtrlStudent.InsertColumn(1, L"Name", LVCFMT_CENTER, (int)(1.75*nColInterval));
-	m_listCtrlStudent.InsertColumn(2, L"Age", LVCFMT_CENTER, (int)(0.5*nColInterval));
-	m_listCtrlStudent.InsertColumn(3, L"Sex", LVCFMT_CENTER, (int)(0.5*nColInterval));
+	m_listCtrlStudent.InsertColumn(2, L"Sex", LVCFMT_CENTER, (int)(0.5*nColInterval));
+	m_listCtrlStudent.InsertColumn(3, L"Age", LVCFMT_CENTER, (int)(0.5*nColInterval));
 	m_listCtrlStudent.InsertColumn(4, L"Phone Number", LVCFMT_CENTER, (int)(1.75*nColInterval));
-
-	/*int nItem = m_listCtrlStudent.InsertItem(0, L"1");
-	m_listCtrlStudent.SetItemText(nItem, 1, L"Mark");
-	m_listCtrlStudent.SetItemText(nItem, 2, L"45");
-	m_listCtrlStudent.SetItemText(nItem, 3, L"Address 1");
-	m_listCtrlStudent.SetItemText(nItem, 4, L"Address 2");
-
-	nItem = m_listCtrlStudent.InsertItem(1, L"2");
-	m_listCtrlStudent.SetItemText(nItem, 1, L"Mark");
-	m_listCtrlStudent.SetItemText(nItem, 2, L"45");
-	m_listCtrlStudent.SetItemText(nItem, 3, L"Address 1");
-	m_listCtrlStudent.SetItemText(nItem, 4, L"Address 2");*/
-
 
 	UpdateData(FALSE);
 
@@ -243,14 +233,15 @@ void CStudentManagementDlg::OnBnClickedBtnConnect()
 
 void CStudentManagementDlg::OnBnClickedBtnEdit()
 {
-	//CString strSQL = _T("insert into dbo.QLSV(StudentID, Name, Sex, Age, PhoneNumber) values('8', 'Phu VK', 'Male', '27', '09888888')");
-	//m_DBConnection.SQLSetDataExecute(strSQL);
-	/*CString strSQL = _T("SELECT * FROM dbo.QLSV");
-	m_DBConnection.SQLGetDataExecute(strSQL);
+	CStudent std;
+	std.SetStudentID(_wtoi(m_listCtrlStudent.GetItemText(m_iSelectedRow, 0)));
+	std.SetName(m_listCtrlStudent.GetItemText(m_iSelectedRow, 1));
+	std.SetSex(m_listCtrlStudent.GetItemText(m_iSelectedRow, 2));
+	std.SetAge(_wtoi(m_listCtrlStudent.GetItemText(m_iSelectedRow, 3)));
+	std.SetPhone(m_listCtrlStudent.GetItemText(m_iSelectedRow, 4));
 
-	std::vector<CStudent> listStudent;
-	listStudent = m_DBConnection.GetStudentInfo();*/
-	
+	CStudentInfoDlg *dlg = new CStudentInfoDlg(this, &std);
+	dlg->DoModal();
 }
 
 void CStudentManagementDlg::EnableButton()
@@ -286,8 +277,8 @@ void CStudentManagementDlg::LoadDBToListControl()
 		strAge.Format(_T("%d"), listStudent[i].GetAge());
 		m_listCtrlStudent.InsertItem(i, strID);
 		m_listCtrlStudent.SetItemText(i, 1, listStudent[i].GetName());
-		m_listCtrlStudent.SetItemText(i, 2, strAge);
-		m_listCtrlStudent.SetItemText(i, 3, listStudent[i].GetSex());
+		m_listCtrlStudent.SetItemText(i, 2, listStudent[i].GetSex());
+		m_listCtrlStudent.SetItemText(i, 3, strAge);
 		m_listCtrlStudent.SetItemText(i, 4, listStudent[i].GetPhone());
 	}
 }
@@ -295,17 +286,33 @@ void CStudentManagementDlg::LoadDBToListControl()
 //receive student info from dlg
 LRESULT CStudentManagementDlg::OnReceiveStudentInforToAdd(WPARAM wParam, LPARAM lParam)
 {
-	//Student 
-	/*int temp = (int)wParam;
-	m_progressStatus.SetPos(temp);
-	int rate = 100 * temp / m_iTotalFileNumber;*/
 	//get info of student need add
-	//m_pStudentService->AddStudent(student);
 	CStudent *student = (CStudent*)wParam;
 	//day xuong database
 	m_pStudentService->AddStudent(*student);
 	
-	m_listCtrlStudent.DeleteAllItems();
 	LoadDBToListControl();
 	return 0L;
 }
+
+LRESULT CStudentManagementDlg::OnReceiveStudentInforToEdit(WPARAM wParam, LPARAM lParam)
+{
+	//get info of student need add
+	CStudent *student = (CStudent*)wParam;
+	//day xuong database
+	//m_pStudentService->EditStudent(*student);
+
+	//m_listCtrlStudent.DeleteAllItems();
+	LoadDBToListControl();
+	return 0L;
+}
+
+void CStudentManagementDlg::OnClickListCtrl(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	POSITION iPos = m_listCtrlStudent.GetFirstSelectedItemPosition();
+	if (iPos)
+	{
+		m_iSelectedRow = m_listCtrlStudent.GetNextSelectedItem(iPos);
+	}
+}
+
