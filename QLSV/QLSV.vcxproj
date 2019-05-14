@@ -107,6 +107,7 @@
     <ClInclude Include="IDatabase.h" />
     <ClInclude Include="IStudentService.h" />
     <ClInclude Include="MessageDefine.h" />
+    <ClInclude Include="SortDialog.h" />
     <ClInclude Include="Student.h" />
     <ClInclude Include="StudentManagement.h" />
     <ClInclude Include="StudentManagementDlg.h" />
@@ -118,6 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DatabaseConnection.cpp" />
+    <ClCompile Include="SortDialog.cpp" />
     <ClCompile Include="Student.cpp" />
     <ClCompile Include="StudentManagement.cpp" />
     <ClCompile Include="StudentManagementDlg.cpp" />

@@ -37,3 +37,15 @@ BOOL CStudentService::AddStudent(CStudent student)
 	m_dbConnection->AddStudent(student);
 	return TRUE;
 }
+
+BOOL CStudentService::EditStudent(CStudent student)
+{
+	m_dbConnection->EditStudent(student);
+	return TRUE;
+}
+
+BOOL CStudentService::DeleteStudent(int iId)
+{
+	m_dbConnection->DeleteStudent(iId);
+	return TRUE;
+}

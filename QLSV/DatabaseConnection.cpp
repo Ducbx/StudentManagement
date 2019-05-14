@@ -201,3 +201,54 @@ BOOL CDatabaseConnection::AddStudent(CStudent student)
 		return FALSE;
 	}
 }
+
+BOOL CDatabaseConnection::EditStudent(CStudent student)
+{
+	CString strAge;
+	strAge.Format(_T("%d"), student.GetAge());
+	CString strID;
+	strID.Format(_T("%d"), student.GetStudentID());
+
+	CString strSQL = L"UPDATE dbo.QLSV SET Name='";
+	strSQL += student.GetName();
+	strSQL += "', Sex ='";
+	strSQL += student.GetSex();
+	strSQL += "', Age = ";
+	strSQL += strAge;
+	strSQL += ", PhoneNumber = '";
+	strSQL += student.GetPhone();
+	strSQL += "' WHERE StudentID = ";
+	strSQL += strID;
+
+	try
+	{
+		SQLSetDataExecute(strSQL);
+		return TRUE;
+	}
+	catch (_com_error & ce)
+	{
+		CString strTemp = ce.Description();
+		AfxMessageBox(strTemp);
+		return FALSE;
+	}
+}
+
+BOOL CDatabaseConnection::DeleteStudent(int iId)
+{
+	CString strID;
+	strID.Format(_T("%d"), iId);
+	CString strSQL = L"DElETE FROM dbo.QLSV WHERE StudentID = ";
+	strSQL += strID;
+
+	try
+	{
+		SQLSetDataExecute(strSQL);
+		return TRUE;
+	}
+	catch (_com_error & ce)
+	{
+		CString strTemp = ce.Description();
+		AfxMessageBox(strTemp);
+		return FALSE;
+	}
+}

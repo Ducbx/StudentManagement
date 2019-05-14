@@ -10,6 +10,7 @@
 #include "Student.h"
 #include<vector>
 #include "MessageDefine.h"
+#include "SortDialog.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -83,7 +84,11 @@ BEGIN_MESSAGE_MAP(CStudentManagementDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_EDIT, &CStudentManagementDlg::OnBnClickedBtnEdit)
 	ON_MESSAGE(UWM_SEND_STUDENT_INFO_TO_ADD, OnReceiveStudentInforToAdd)
 	ON_MESSAGE(UWM_SEND_STUDENT_INFO_TO_EDIT, OnReceiveStudentInforToEdit)
+	ON_MESSAGE(UWM_SEND_STUDENT_INFO_TO_SORT, OnReceiveStudentInforToSort)
 	ON_NOTIFY(NM_CLICK, IDC_LIST_ALL_STUDENT, &CStudentManagementDlg::OnClickListCtrl)
+	ON_BN_CLICKED(IDC_BTN_DEL, &CStudentManagementDlg::OnBnClickedBtnDel)
+	ON_BN_CLICKED(IDC_BTN_SORT, &CStudentManagementDlg::OnBnClickedBtnSort)
+	ON_BN_CLICKED(IDC_BTN_SEARCH, &CStudentManagementDlg::OnBnClickedBtnSearch)
 END_MESSAGE_MAP()
 
 
@@ -233,16 +238,21 @@ void CStudentManagementDlg::OnBnClickedBtnConnect()
 
 void CStudentManagementDlg::OnBnClickedBtnEdit()
 {
-	CStudent std;
-	std.SetStudentID(_wtoi(m_listCtrlStudent.GetItemText(m_iSelectedRow, 0)));
-	std.SetName(m_listCtrlStudent.GetItemText(m_iSelectedRow, 1));
-	std.SetSex(m_listCtrlStudent.GetItemText(m_iSelectedRow, 2));
-	std.SetAge(_wtoi(m_listCtrlStudent.GetItemText(m_iSelectedRow, 3)));
-	std.SetPhone(m_listCtrlStudent.GetItemText(m_iSelectedRow, 4));
+	if (m_iSelectedRow > -1)
+	{
+		CStudent std;
+		std.SetStudentID(_wtoi(m_listCtrlStudent.GetItemText(m_iSelectedRow, 0)));
+		std.SetName(m_listCtrlStudent.GetItemText(m_iSelectedRow, 1));
+		std.SetSex(m_listCtrlStudent.GetItemText(m_iSelectedRow, 2));
+		std.SetAge(_wtoi(m_listCtrlStudent.GetItemText(m_iSelectedRow, 3)));
+		std.SetPhone(m_listCtrlStudent.GetItemText(m_iSelectedRow, 4));
 
-	CStudentInfoDlg *dlg = new CStudentInfoDlg(this, &std);
-	dlg->DoModal();
+		CStudentInfoDlg *dlg = new CStudentInfoDlg(this, &std);
+		dlg->DoModal();
+		m_iSelectedRow = -1;
+	}
 }
+
 
 void CStudentManagementDlg::EnableButton()
 {
@@ -299,10 +309,27 @@ LRESULT CStudentManagementDlg::OnReceiveStudentInforToEdit(WPARAM wParam, LPARAM
 {
 	//get info of student need add
 	CStudent *student = (CStudent*)wParam;
-	//day xuong database
-	//m_pStudentService->EditStudent(*student);
+	m_pStudentService->EditStudent(*student);
 
-	//m_listCtrlStudent.DeleteAllItems();
+	LoadDBToListControl();
+	return 0L;
+}
+
+LRESULT CStudentManagementDlg::OnReceiveStudentInforToSort(WPARAM wParam, LPARAM lParam)
+{
+	//get info of student need add
+	int iCheck = (int)wParam;
+	for (int i = 0; iCheck>0; i++)
+	{
+		int iTemp = iCheck % 2;
+		if (iTemp)
+		{
+
+		}
+		iCheck = iCheck / 2;
+	}
+
+
 	LoadDBToListControl();
 	return 0L;
 }
@@ -316,3 +343,29 @@ void CStudentManagementDlg::OnClickListCtrl(NMHDR *pNMHDR, LRESULT *pResult)
 	}
 }
 
+
+
+void CStudentManagementDlg::OnBnClickedBtnDel()
+{
+	if (m_iSelectedRow > -1)
+	{
+		//get id of student need to delete
+		int id = _wtoi(m_listCtrlStudent.GetItemText(m_iSelectedRow, 0));
+		m_pStudentService->DeleteStudent(id);
+		LoadDBToListControl();
+		m_iSelectedRow = -1;
+	}
+}
+
+
+void CStudentManagementDlg::OnBnClickedBtnSort()
+{
+	CSortDialog *dlg = new CSortDialog(this);
+	dlg->DoModal();
+}
+
+
+void CStudentManagementDlg::OnBnClickedBtnSearch()
+{
+	// TODO: Add your control notification handler code here
+}

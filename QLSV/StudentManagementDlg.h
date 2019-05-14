@@ -52,7 +52,11 @@ public:
 	afx_msg void OnBnClickedBtnConnect();
 	afx_msg LRESULT OnReceiveStudentInforToAdd(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnReceiveStudentInforToEdit(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnReceiveStudentInforToSort(WPARAM wParam, LPARAM lParam);
 	void DisableButton();
 	void EnableButton();
 	void LoadDBToListControl();
+	afx_msg void OnBnClickedBtnDel();
+	afx_msg void OnBnClickedBtnSort();
+	afx_msg void OnBnClickedBtnSearch();
 };

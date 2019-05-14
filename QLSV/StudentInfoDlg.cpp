@@ -112,10 +112,12 @@ void CStudentInfoDlg::OnBnClickedButtonOk()
 
 	if (m_inputStudent)
 	{
+		//edit student
 		::SendMessage(GetParent()->GetSafeHwnd(), UWM_SEND_STUDENT_INFO_TO_EDIT, (WPARAM)m_student, 0);
 	}
 	else
 	{
+		//add student
 		::SendMessage(GetParent()->GetSafeHwnd(), UWM_SEND_STUDENT_INFO_TO_ADD, (WPARAM)m_student, 0);
 	}
 	

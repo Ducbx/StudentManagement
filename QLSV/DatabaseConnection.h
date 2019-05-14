@@ -28,5 +28,7 @@ public:
 	virtual BOOL OpenDB();
 	virtual BOOL CloseDB();
 	virtual BOOL AddStudent(CStudent student);
+	virtual BOOL EditStudent(CStudent student);
+	virtual BOOL DeleteStudent(int iId);
 };
 
